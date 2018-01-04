@@ -3,9 +3,10 @@
 
 $script = <<SCRIPT
 PACKAGES=(build-essential autoconf autogen libtool libssl-dev libevent-dev pkg-config libdb4.8++-dev libboost1.58-all-dev)
-apt-add-repository -y ppa:bitcoin/bitcoin \
-  && apt-get update \
-  && apt-get -y upgrade 
+if ! grep -q "^deb .*bitcoin/bitcoin" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
+  apt-add-repository -y ppa:bitcoin/bitcoin
+fi
+apt-get update && apt-get -y upgrade 
 for pkg in ${PACKAGES[@]}; do
   dpkg -s $pkg >/dev/null 2>&1 || apt-get -y install $pkg
 done
