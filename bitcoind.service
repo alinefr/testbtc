@@ -1,0 +1,25 @@
+[Unit]
+Description=Bitcoin's distributed currency daemon
+After=network.target
+
+[Service]
+User=bitcoin
+Group=bitcoin
+
+Type=forking
+PermissionsStartOnly=true
+ExecStartPre=-/bin/mkdir -p /var/run/bitcoin
+ExecStartPre=/bin/chown -R bitcoin:bitcoin /var/run/bitcoin/
+ExecStart=/usr/local/bin/bitcoind -daemon -pid=/var/run/bitcoin/bitcoind.pid \
+-conf=/etc/bitcoin/bitcoin.conf -datadir=/btc/data
+PIDFile=/var/run/bitcoin/bitcoind.pid
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target
